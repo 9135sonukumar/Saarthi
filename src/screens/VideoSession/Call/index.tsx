@@ -6,9 +6,9 @@ import {
   useStreamVideoClient,
   CallContent,
 } from '@stream-io/video-react-native-sdk';
-import {NavigationType} from '../../Types';
-import {colors, fonts, screens, size, strings} from '../../constants';
-import {SCREEN_HEIGHT} from '../../constants/dimensions';
+import {NavigationType} from '../../../Types';
+import {colors, fonts, screens, size, strings} from '../../../constants';
+import {SCREEN_HEIGHT} from '../../../constants/dimensions';
 
 interface Props {
   navigation: NavigationType;
@@ -18,11 +18,14 @@ const CallScreen = (props: Props) => {
   const [call, setCall] = React.useState<Call | null>(null);
   const client = useStreamVideoClient();
 
-  const callId = 'uIJ5hlpsX9h5';
+  const callId = 'rcDGdTaqCKhP';
 
   useEffect(() => {
     const call = client.call('default', callId);
-    call.join({create: true}).then(() => setCall(call));
+    call
+      .join({create: true})
+      .then(() => setCall(call))
+      .catch(err => console.error('Call Error===>>', err));
   }, [client]);
 
   if (!call) {

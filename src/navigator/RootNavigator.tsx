@@ -1,16 +1,17 @@
-import {
-  Image,
-  Pressable,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {images, screens} from '../constants';
-import HomeScreen from '../screens/Home';
-import CallScreen from '../screens/Call';
+import {Image, Pressable, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {images, screens} from '../constants';
+import Splash from '../screens/Splash';
+import HomeScreen from '../screens/Home';
+import CallScreen from '../screens/VideoSession/Call';
 import Profile from '../screens/Profile';
+import {vh, vw} from '../constants/dimensions';
+import SignIn from '../screens/Onboarding/SignIn';
+import SignUp from '../screens/Onboarding/SignUp';
+import BottomTabNavigator from './BottomTabNavigator';
+import ForgotPassword from '../screens/Onboarding/ForgotPassword';
+import ComingSoon from '../screens/ComingSoon';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,28 +20,34 @@ function RootNavigator() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          name={screens.Home}
-          component={HomeScreen}
-          options={({navigation}) => ({
-            headerTitle: '',
-            headerLeft(props) {
-              return <Image source={images.logo_sqr} style={styles.leftLogo} />;
-            },
-            headerRight(props) {
-              return (
-                <Pressable
-                  onPress={() => {
-                    navigation.navigate(screens.Profile);
-                  }}
-                  style={styles.profileBox}>
-                  <Image
-                    source={images.ram_profile}
-                    style={styles.profilePic}
-                  />
-                </Pressable>
-              );
-            },
-          })}
+          name={screens.Splash}
+          component={Splash}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={screens.SignIn}
+          component={SignIn}
+          options={{headerTitle: 'Sign In'}}
+        />
+        <Stack.Screen
+          name={screens.SignUp}
+          component={SignUp}
+          options={{headerTitle: 'Sign Up'}}
+        />
+        <Stack.Screen
+          name={screens.ForgotPassword}
+          component={ForgotPassword}
+          options={{headerTitle: 'Forgot Password'}}
+        />
+        <Stack.Screen
+          name={'ComingSoon'}
+          component={ComingSoon}
+          options={{headerTitle: 'Coming Soon'}}
+        />
+        <Stack.Screen
+          name={screens.BottomTab}
+          component={BottomTabNavigator}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name={screens.Call}
@@ -57,19 +64,19 @@ function RootNavigator() {
 
 const styles = StyleSheet.create({
   leftLogo: {
-    width: 80,
-    height: 40,
+    width: vw(80),
+    height: vh(40),
     resizeMode: 'cover',
   },
   profileBox: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: vw(40),
+    height: vw(40),
+    borderRadius: vw(20),
     overflow: 'hidden',
   },
   profilePic: {
-    width: 40,
-    height: 40,
+    width: vw(40),
+    height: vw(40),
     resizeMode: 'cover',
   },
 });

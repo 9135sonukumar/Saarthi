@@ -33,11 +33,6 @@ const HomeScreen: FC<Props> = props => {
       </View>
       <Image source={images.logo_sqr} style={styles.logo_sqr} />
       <Text style={styles.textSaarthi}>{strings.welcome_to_saarthi}</Text>
-      <Pressable
-        style={styles.button}
-        onPress={() => props.navigation.navigate(screens.Call)}>
-        <Text style={styles.text}>{strings.join_live_session}</Text>
-      </Pressable>
     </SafeAreaView>
   );
 };
@@ -56,25 +51,11 @@ const styles = StyleSheet.create({
     resizeMode: 'stretch',
     alignItems: 'center',
   },
-  text: {
-    fontSize: size.S_14,
-    color: colors.white,
-    fontFamily: fonts.openSansMedium,
-  },
   logo_sqr: {width: SCREEN_WIDTH, height: vh(150), resizeMode: 'cover'},
   textSaarthi: {
     fontSize: size.S_12,
     color: colors.primary,
     fontFamily: fonts.openSansMedium,
     marginTop: vw(20),
-  },
-  button: {
-    width: vw(250),
-    height: vh(40),
-    borderRadius: vw(8),
-    marginTop: vh(40),
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
