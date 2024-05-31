@@ -6,4 +6,8 @@ export const strings = {
   dont_have_acc: "Don't have an account? Sign Up",
   forgot_password: 'Forgot password?',
   login_successfully: 'Login successfully',
+  join: 'Join',
+  watch: 'Watch',
+  view_pdf: 'View PDF',
+  class: 'CLASS',
 };

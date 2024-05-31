@@ -1,14 +1,42 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {colors, fonts, images, screens, size} from '../constants';
 import HomeScreen from '../screens/Home';
-import {Image, Pressable} from 'react-native';
-import {StyleSheet} from 'react-native';
+import {Image, Pressable, StyleSheet} from 'react-native';
 import {vh, vw} from '../constants/dimensions';
 import SaarthiMart from '../screens/Mart/SaarthiMart';
-import CallHome from '../screens/VideoSession/CallHome';
+import CourseHome from '../screens/Course/CourseHome';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import CourseList from '../screens/Course/CourseList';
+import CourseDetails from '../screens/Course/CourseDetails';
+import PurchasesCourseClasses from '../screens/Course/PurchasesCourse/PurchasesCourseClasses';
+import RecordedClassDetail from '../screens/Course/PurchasesCourse/PurchasesCourseClasses/RecordedClass/RecordedClassDetail';
 
 const BottomTab = createBottomTabNavigator();
-
+const CourseStack = createNativeStackNavigator();
+const CourseStackScreen = () => (
+  <CourseStack.Navigator>
+    <CourseStack.Screen
+      name={screens.CourseHome}
+      component={CourseHome}
+      options={{headerShown: false}}
+    />
+    <CourseStack.Screen
+      name={screens.CourseList}
+      component={CourseList}
+      options={{headerShown: false}}
+    />
+    <CourseStack.Screen
+      name={screens.CourseDetails}
+      component={CourseDetails}
+      options={{headerShown: false}}
+    />
+    <CourseStack.Screen
+      name={screens.PurchasesCourseClasses}
+      component={PurchasesCourseClasses}
+      options={{headerShown: false}}
+    />
+  </CourseStack.Navigator>
+);
 function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
@@ -55,8 +83,8 @@ function BottomTabNavigator() {
         })}
       />
       <BottomTab.Screen
-        name={screens.CallHome}
-        component={CallHome}
+        name="CourseStackScreen"
+        component={CourseStackScreen}
         options={({navigation}) => ({
           headerTitle: '',
           headerShadowVisible: true,
@@ -74,13 +102,11 @@ function BottomTabNavigator() {
               </Pressable>
             );
           },
-          tabBarLabel: 'Live',
+          tabBarLabel: 'Course',
           tabBarIcon({focused}) {
             return (
               <Image
-                source={
-                  focused ? images.video_call_fill : images.video_call_unfill
-                }
+                source={focused ? images.course_fill : images.course_unfill}
                 style={[
                   styles.iconStyle,
                   {tintColor: focused ? colors.primary : colors.black},
