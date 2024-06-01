@@ -28,4 +28,8 @@ export const strings = {
   enter_ur_email: 'Enter your email Id',
   password: 'Password',
   sign_up: 'Sign Up',
+  join: 'Join',
+  watch: 'Watch',
+  view_pdf: 'View PDF',
+  class: 'CLASS',
 };

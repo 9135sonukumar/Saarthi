@@ -7,9 +7,39 @@ import {vh, vw} from '../constants/dimensions';
 import SaarthiMart from '../screens/Mart/SaarthiMart';
 import CallHome from '../screens/VideoSession/CallHome';
 import {colors, fonts, images, screens, size} from '../constants';
+import CourseHome from '../screens/Course/CourseHome';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import CourseList from '../screens/Course/CourseList';
+import CourseDetails from '../screens/Course/CourseDetails';
+import PurchasesCourseClasses from '../screens/Course/PurchasesCourse/PurchasesCourseClasses';
+import RecordedClassDetail from '../screens/Course/PurchasesCourse/PurchasesCourseClasses/RecordedClass/RecordedClassDetail';
 
 const BottomTab = createBottomTabNavigator();
-
+const CourseStack = createNativeStackNavigator();
+const CourseStackScreen = () => (
+  <CourseStack.Navigator>
+    <CourseStack.Screen
+      name={screens.CourseHome}
+      component={CourseHome}
+      options={{headerShown: false}}
+    />
+    <CourseStack.Screen
+      name={screens.CourseList}
+      component={CourseList}
+      options={{headerShown: false}}
+    />
+    <CourseStack.Screen
+      name={screens.CourseDetails}
+      component={CourseDetails}
+      options={{headerShown: false}}
+    />
+    <CourseStack.Screen
+      name={screens.PurchasesCourseClasses}
+      component={PurchasesCourseClasses}
+      options={{headerShown: false}}
+    />
+  </CourseStack.Navigator>
+);
 function BottomTabNavigator() {
   const {userData, avatar_url} = useAppSelector(state => state.Auth);
 
@@ -58,8 +88,8 @@ function BottomTabNavigator() {
         })}
       />
       <BottomTab.Screen
-        name={screens.CallHome}
-        component={CallHome}
+        name="CourseStackScreen"
+        component={CourseStackScreen}
         options={({navigation}) => ({
           headerTitle: '',
           headerShadowVisible: true,
@@ -77,13 +107,11 @@ function BottomTabNavigator() {
               />
             );
           },
-          tabBarLabel: 'Live',
+          tabBarLabel: 'Course',
           tabBarIcon({focused}) {
             return (
               <Image
-                source={
-                  focused ? images.video_call_fill : images.video_call_unfill
-                }
+                source={focused ? images.course_fill : images.course_unfill}
                 style={[
                   styles.iconStyle,
                   {tintColor: focused ? colors.primary : colors.black},
