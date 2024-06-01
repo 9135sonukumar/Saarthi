@@ -1,7 +1,7 @@
 import {Image, Pressable, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {images, screens} from '../constants';
+import {colors, images, screens} from '../constants';
 import Splash from '../screens/Splash';
 import HomeScreen from '../screens/Home';
 import CallScreen from '../screens/VideoSession/Call';
@@ -12,6 +12,8 @@ import SignUp from '../screens/Onboarding/SignUp';
 import BottomTabNavigator from './BottomTabNavigator';
 import ForgotPassword from '../screens/Onboarding/ForgotPassword';
 import ComingSoon from '../screens/ComingSoon';
+import MyWebView from '../screens/MyWebView';
+import ChangePassword from '../screens/Onboarding/ChangePassword';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,6 +42,14 @@ function RootNavigator() {
           options={{headerTitle: 'Forgot Password'}}
         />
         <Stack.Screen
+          name={screens.ChangePassword}
+          component={ChangePassword}
+          options={{
+            headerTintColor: colors.primary,
+            headerTitle: 'Change Password',
+          }}
+        />
+        <Stack.Screen
           name={'ComingSoon'}
           component={ComingSoon}
           options={{headerTitle: 'Coming Soon'}}
@@ -56,7 +66,20 @@ function RootNavigator() {
             headerShown: false,
           }}
         />
-        <Stack.Screen name={screens.Profile} component={Profile} options={{}} />
+        <Stack.Screen
+          name={screens.Profile}
+          component={Profile}
+          options={{
+            headerTintColor: colors.primary,
+          }}
+        />
+        <Stack.Screen
+          name={screens.MyWebView}
+          component={MyWebView}
+          options={{
+            headerTintColor: colors.primary,
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

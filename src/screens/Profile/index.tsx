@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useRef, useState} from 'react';
 import {
   Pressable,
   SafeAreaView,
@@ -6,6 +6,7 @@ import {
   Text,
   View,
   ImageProps,
+  Platform,
 } from 'react-native';
 import {Button, Icon} from '@rneui/themed';
 import {ScrollView} from 'react-native';
@@ -14,10 +15,14 @@ import {NavigationType} from '../../Types';
 import {supabase} from '../../lib/supabase';
 import Router from '../../navigator/routes';
 import Toast from 'react-native-toast-message';
-import {vw} from '../../constants/dimensions';
-import {reset} from '../../features/Auth/authSlice';
-import {colors, images} from '../../constants';
+import {SCREEN_WIDTH, vh, vw} from '../../constants/dimensions';
+import {reset, saveAvatarUrl} from '../../features/Auth/authSlice';
+import {colors, images, screens, size, strings} from '../../constants';
 import {styles} from './styles';
+import {PickImage} from '../../utils/common-methods';
+import {decode} from 'base64-arraybuffer';
+import Avatar from '../../components/Avatar';
+import {Modalize} from 'react-native-modalize';
 
 interface Props {
   navigation: NavigationType;
@@ -26,20 +31,45 @@ interface Props {
 const Profile: FC<Props> = props => {
   const {navigation} = props;
   const [loading, setLoading] = useState(false);
+  const [loadingLogout, setLoadingLogout] = useState(false);
+
+  const modalizeRef = useRef<Modalize>(null);
+
+  const onOpen = () => {
+    modalizeRef.current?.open();
+  };
 
   const dispatch = useAppDispatch();
-  const {userData} = useAppSelector(state => state.Auth);
+  const {userData, user, avatar_url} = useAppSelector(state => state.Auth);
 
   const signOut = async () => {
-    setLoading(true);
+    setLoadingLogout(true);
     try {
       const {error} = await supabase.auth.signOut();
       if (error) {
         Toast.show({type: 'error', text2: error.message});
-        setLoading(false);
+        setLoadingLogout(false);
       } else {
         dispatch(reset());
         Router.resetNew(navigation, 'SignIn');
+        setLoadingLogout(false);
+      }
+    } catch (err) {
+      setLoadingLogout(false);
+    }
+  };
+
+  const uploadPicture = async (path: string, body: any, mimeType: string) => {
+    setLoading(true);
+    try {
+      const {error, data} = await supabase.storage
+        .from('avatars')
+        .upload(path, body, {contentType: mimeType});
+      if (error) {
+        Toast.show({type: 'error', text2: error.message});
+        setLoading(false);
+      } else {
+        updateAvatarUrl(data.path);
         setLoading(false);
       }
     } catch (err) {
@@ -47,18 +77,36 @@ const Profile: FC<Props> = props => {
     }
   };
 
-  // {userData?.name
-  //   ?.trim()
-  //   .match(/\b(\w)/g)
-  //   .join('')
-  //   .substring(0, 4)}
+  const updateAvatarUrl = async (path: string) => {
+    setLoading(true);
+    try {
+      const {
+        data: {publicUrl},
+      } = supabase.storage.from('avatars').getPublicUrl(path);
+
+      const {error} = await supabase
+        .from('profiles')
+        .update({avatar_url: publicUrl})
+        .eq('id', user?.id);
+
+      if (error) {
+        Toast.show({type: 'error', text2: error.message});
+        setLoading(false);
+      } else {
+        dispatch(saveAvatarUrl(publicUrl));
+        setLoading(false);
+      }
+    } catch (err) {
+      setLoading(false);
+    }
+  };
 
   const renderItem = (item: ProfileOption) => {
     return (
       <Pressable
         key={item.id.toString()}
         onPress={() => {
-          navigation.navigate(item.navigationScreen);
+          navigation.navigate(item.navigationScreen, item.params);
         }}
         style={styles.rowView1}>
         <View style={styles.imageView}>
@@ -83,13 +131,80 @@ const Profile: FC<Props> = props => {
     );
   };
 
+  const renderModalContent = () => {
+    return (
+      <>
+        <Text style={styles.profilePhoto}>{strings.profile_photo}</Text>
+        <View style={styles.optionBox}>
+          <Pressable
+            style={styles.align}
+            onPress={() => {
+              PickImage.getCamera(
+                true,
+                (image: any, mimeType: any, filename: string) => {
+                  // console.log('image===========>>>', {mimeType, filename, image});
+                  modalizeRef.current?.close();
+                  uploadPicture(filename, decode(image), mimeType);
+                },
+              );
+            }}>
+            <View style={styles.iconBox}>
+              <Image source={images.camera} style={styles.icon} />
+            </View>
+            <Text style={styles.iconText}>{strings.camera}</Text>
+          </Pressable>
+          <Pressable
+            style={styles.align}
+            onPress={() => {
+              PickImage.getSinglePic(
+                true,
+                (image: any, mimeType: any, filename: string) => {
+                  // console.log('image===========>>>', {mimeType, filename});
+                  modalizeRef.current?.close();
+                  uploadPicture(filename, decode(image), mimeType);
+                },
+              );
+            }}>
+            <View style={styles.iconBox}>
+              <Image source={images.picture} style={styles.icon} />
+            </View>
+            <Text style={styles.iconText}>{strings.gallery}</Text>
+          </Pressable>
+        </View>
+      </>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      <Modalize
+        ref={modalizeRef}
+        snapPoint={300}
+        // onClose={() => {}}
+        // onOpen={() => {}}
+        avoidKeyboardLikeIOS={true}
+        keyboardAvoidingBehavior={Platform.OS === 'ios' ? undefined : 'height'}
+        handleStyle={{backgroundColor: colors.border1, marginTop: vh(15)}}
+        modalHeight={180}>
+        <View style={{width: SCREEN_WIDTH, marginTop: vh(30)}}>
+          {renderModalContent()}
+        </View>
+      </Modalize>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollView}>
-        <Pressable onPress={() => {}} style={styles.profileBox}>
-          <Image source={images.ram_profile} style={styles.profilePic} />
+        <Avatar
+          userName={userData?.full_name}
+          url={avatar_url}
+          style={{marginTop: vh(40)}}
+          titleStyle={{fontSize: size.S_20}}
+        />
+        <Pressable
+          onPress={() => {
+            onOpen();
+          }}
+          style={styles.cameraBox}>
+          <Image source={images.camera} style={styles.camera} />
         </Pressable>
         <Text style={styles.name}>{userData?.full_name}</Text>
         <Text style={styles.email}>{userData?.email}</Text>
@@ -97,9 +212,9 @@ const Profile: FC<Props> = props => {
         {DATA.map(renderItem)}
       </ScrollView>
       <Button
-        title={'Log Out'}
+        title={strings.log_out}
         activeOpacity={0.8}
-        loading={loading}
+        loading={loadingLogout}
         icon={
           <Icon
             type="material"
@@ -125,42 +240,55 @@ type ProfileOption = {
   title: string;
   navigationScreen: string;
   image: ImageProps;
+  params?: object;
 };
 
 const DATA: ProfileOption[] = [
   {
     id: 0,
-    title: 'Update Profile',
+    title: strings.update_profile,
     navigationScreen: 'ComingSoon',
     image: images.updateProfile,
   },
   {
     id: 1,
-    title: 'Settings',
+    title: strings.settings,
     navigationScreen: 'ComingSoon',
     image: images.settings,
   },
   {
     id: 2,
-    title: 'Privacy Policy',
-    navigationScreen: 'ComingSoon',
+    title: strings.privacy_policy,
+    navigationScreen: screens.MyWebView,
     image: images.privacyPolicy,
+    params: {
+      title: strings.privacy_policy,
+    },
   },
   {
     id: 3,
-    title: 'Terms & Conditions',
-    navigationScreen: 'ComingSoon',
+    title: strings.terms_n_cond,
+    navigationScreen: screens.MyWebView,
     image: images.termsCondition,
+    params: {
+      title: strings.terms_n_cond,
+    },
   },
   {
     id: 4,
-    title: 'Help & Support',
+    title: strings.help_n_support,
     navigationScreen: 'ComingSoon',
     image: images.help_support,
   },
   {
     id: 5,
-    title: 'Choose Language',
+    title: strings.change_password,
+    navigationScreen: screens.ChangePassword,
+    image: images.padlock,
+  },
+  {
+    id: 6,
+    title: strings.choose_language,
     navigationScreen: 'ComingSoon',
     image: images.translate,
   },

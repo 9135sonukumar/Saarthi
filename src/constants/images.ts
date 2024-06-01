@@ -19,4 +19,7 @@ export const images = {
   translate: require('../assets/images/translate.png'),
   help_support: require('../assets/images/customer-support.png'),
   coming_soon: require('../assets/images/comingSoon.png'),
+  camera: require('../assets/images/camera.png'),
+  picture: require('../assets/images/picture.png'),
+  padlock: require('../assets/images/padlock.png'),
 };

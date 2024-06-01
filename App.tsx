@@ -18,6 +18,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {persistor, store} from './src/store';
 import CustomToast from './src/components/CustomToast';
 import {supabase} from './src/lib/supabase';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 const userId = 'Callista_Ming';
 const user = {
@@ -58,15 +59,20 @@ function App(): React.JSX.Element {
 
   return (
     <StreamVideo client={client}>
-      <SafeAreaProvider style={styles.container}>
-        <StatusBar barStyle={'light-content'} backgroundColor={colors.black} />
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            <RootNavigator />
-          </PersistGate>
-        </Provider>
-        <CustomToast />
-      </SafeAreaProvider>
+      <GestureHandlerRootView style={{flex: 1}}>
+        <SafeAreaProvider style={styles.container}>
+          <StatusBar
+            barStyle={'light-content'}
+            backgroundColor={colors.black}
+          />
+          <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+              <RootNavigator />
+            </PersistGate>
+          </Provider>
+          <CustomToast />
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
     </StreamVideo>
   );
 }

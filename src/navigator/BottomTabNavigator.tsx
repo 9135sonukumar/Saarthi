@@ -1,15 +1,18 @@
+import {Image, StyleSheet} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {colors, fonts, images, screens, size} from '../constants';
+import {useAppSelector} from '../hooks';
 import HomeScreen from '../screens/Home';
-import {Image, Pressable} from 'react-native';
-import {StyleSheet} from 'react-native';
+import Avatar from '../components/Avatar';
 import {vh, vw} from '../constants/dimensions';
 import SaarthiMart from '../screens/Mart/SaarthiMart';
 import CallHome from '../screens/VideoSession/CallHome';
+import {colors, fonts, images, screens, size} from '../constants';
 
 const BottomTab = createBottomTabNavigator();
 
 function BottomTabNavigator() {
+  const {userData, avatar_url} = useAppSelector(state => state.Auth);
+
   return (
     <BottomTab.Navigator
       screenOptions={{
@@ -32,13 +35,13 @@ function BottomTabNavigator() {
           },
           headerRight(props) {
             return (
-              <Pressable
-                onPress={() => {
-                  navigation.navigate(screens.Profile);
-                }}
-                style={styles.profileBox}>
-                <Image source={images.ram_profile} style={styles.profilePic} />
-              </Pressable>
+              <Avatar
+                userName={userData?.full_name}
+                url={avatar_url}
+                size={40}
+                style={styles.avatar}
+                onImagePress={() => navigation.navigate(screens.Profile)}
+              />
             );
           },
           tabBarIcon({focused}) {
@@ -65,13 +68,13 @@ function BottomTabNavigator() {
           },
           headerRight(props) {
             return (
-              <Pressable
-                onPress={() => {
-                  navigation.navigate(screens.Profile);
-                }}
-                style={styles.profileBox}>
-                <Image source={images.ram_profile} style={styles.profilePic} />
-              </Pressable>
+              <Avatar
+                userName={userData?.full_name}
+                url={avatar_url}
+                size={40}
+                style={styles.avatar}
+                onImagePress={() => navigation.navigate(screens.Profile)}
+              />
             );
           },
           tabBarLabel: 'Live',
@@ -101,13 +104,13 @@ function BottomTabNavigator() {
           },
           headerRight(props) {
             return (
-              <Pressable
-                onPress={() => {
-                  navigation.navigate(screens.Profile);
-                }}
-                style={styles.profileBox}>
-                <Image source={images.ram_profile} style={styles.profilePic} />
-              </Pressable>
+              <Avatar
+                userName={userData?.full_name}
+                url={avatar_url}
+                size={40}
+                style={styles.avatar}
+                onImagePress={() => navigation.navigate(screens.Profile)}
+              />
             );
           },
           tabBarLabel: 'Mart',
@@ -136,17 +139,8 @@ const styles = StyleSheet.create({
     marginLeft: vw(10),
     resizeMode: 'cover',
   },
-  profileBox: {
-    width: vw(40),
-    height: vw(40),
+  avatar: {
     marginRight: vw(10),
-    borderRadius: vw(20),
-    overflow: 'hidden',
-  },
-  profilePic: {
-    width: vw(40),
-    height: vw(40),
-    resizeMode: 'cover',
   },
   iconStyle: {
     width: vw(25),

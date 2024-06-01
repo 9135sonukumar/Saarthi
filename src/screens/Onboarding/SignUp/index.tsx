@@ -1,12 +1,12 @@
 import React, {FC, useState} from 'react';
-import {SafeAreaView, StyleSheet} from 'react-native';
-import {colors, fonts, screens, size} from '../../../constants';
-import {NavigationType} from '../../../Types';
+import {SafeAreaView, ScrollView} from 'react-native';
+import {styles} from './styles';
 import {Button, Input} from '@rneui/themed';
-import {vh, vw} from '../../../constants/dimensions';
+import {NavigationType} from '../../../Types';
 import {supabase} from '../../../lib/supabase';
-import {ScrollView} from 'react-native';
 import Toast from 'react-native-toast-message';
+import {vh} from '../../../constants/dimensions';
+import {colors, screens, strings} from '../../../constants';
 
 interface Props {
   navigation: NavigationType;
@@ -34,7 +34,6 @@ const SignUp: FC<Props> = props => {
           data: {
             full_name: name,
             mobile_number: mobile,
-            avatar_url: 'https://example/avtar/image',
             address: address,
           },
         },
@@ -65,7 +64,7 @@ const SignUp: FC<Props> = props => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{marginTop: vh(30), paddingBottom: vh(30)}}>
         <Input
-          placeholder={'Enter your full name'}
+          placeholder={strings.enter_ur_full_n}
           onChangeText={val => {
             setName(val);
           }}
@@ -76,7 +75,7 @@ const SignUp: FC<Props> = props => {
           autoCapitalize={'none'}
         />
         <Input
-          placeholder={'Enter your mobile number'}
+          placeholder={strings.enter_ur_mb}
           onChangeText={val => {
             setmobile(val);
           }}
@@ -89,7 +88,7 @@ const SignUp: FC<Props> = props => {
           autoCapitalize={'none'}
         />
         <Input
-          placeholder={'Enter your full address'}
+          placeholder={strings.enter_ur_full_add}
           onChangeText={val => {
             setAddress(val);
           }}
@@ -100,7 +99,7 @@ const SignUp: FC<Props> = props => {
           autoCapitalize={'none'}
         />
         <Input
-          placeholder={'Enter your email Id'}
+          placeholder={strings.enter_ur_email}
           onChangeText={val => {
             setEmail(val);
           }}
@@ -112,7 +111,7 @@ const SignUp: FC<Props> = props => {
           autoCapitalize={'none'}
         />
         <Input
-          placeholder={'Password'}
+          placeholder={strings.password}
           containerStyle={styles.inputBoxStyle}
           selectionColor={colors.primary}
           secureTextEntry
@@ -125,7 +124,7 @@ const SignUp: FC<Props> = props => {
         />
       </ScrollView>
       <Button
-        title={'Sign Up'}
+        title={strings.sign_up}
         activeOpacity={0.8}
         loading={loading}
         disabled={!isEmpty}
@@ -139,29 +138,3 @@ const SignUp: FC<Props> = props => {
 };
 
 export default SignUp;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  inputBoxStyle: {width: vw(330), alignSelf: 'center'},
-  buttonStyle: {
-    width: vw(330),
-    height: vh(44),
-    borderRadius: vw(20),
-    marginBottom: vh(40),
-    alignSelf: 'center',
-    backgroundColor: colors.primary,
-  },
-  titleStyle: {
-    fontSize: size.S_14,
-    color: colors.white,
-    fontFamily: fonts.openSansMedium,
-  },
-  inputStyle: {
-    fontSize: size.S_14,
-    color: colors.black,
-    fontFamily: fonts.openSansSemiBold,
-  },
-});

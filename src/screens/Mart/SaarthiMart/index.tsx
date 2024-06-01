@@ -29,14 +29,10 @@ const SaarthiMart: FC<Props> = props => {
     getCategoryAPI();
   }, []);
 
-  type Table = 'CategoryMatser' | 'User' | 'Address';
-
   const getCategoryAPI = async () => {
     setLoading(true);
     try {
-      const {error, data} = await supabase
-        .from<Table, any>('CategoryMatser')
-        .select();
+      const {error, data} = await supabase.from('CategoryMatser').select('*');
       if (error) {
         Toast.show({type: 'error', text2: error.message});
         setLoading(false);

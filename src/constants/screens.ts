@@ -9,4 +9,6 @@ export enum screens {
   SaarthiMart = 'SaarthiMart',
   CallHome = 'CallHome',
   ForgotPassword = 'ForgotPassword',
+  ChangePassword = 'ChangePassword',
+  MyWebView = 'MyWebView',
 }

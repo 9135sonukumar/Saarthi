@@ -5,12 +5,14 @@ type AuthState = {
   token: string | null;
   user: User | null;
   userData: UserMetadata | null;
+  avatar_url: string | null;
 };
 
 const initialState: AuthState = {
   token: null,
   user: null,
   userData: null,
+  avatar_url: null,
 };
 
 const authSlice = createSlice({
@@ -22,12 +24,15 @@ const authSlice = createSlice({
       state.user = payload.user;
       state.userData = payload.user_metadata;
     },
+    saveAvatarUrl: (state, {payload}) => {
+      state.avatar_url = payload;
+    },
     reset: () => {
       return initialState;
     },
   },
 });
 
-export const {saveAuth, reset} = authSlice.actions;
+export const {saveAuth, reset, saveAvatarUrl} = authSlice.actions;
 
 export default authSlice.reducer;
